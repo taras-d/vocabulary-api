@@ -1,6 +1,6 @@
 # vocabulary-api
 
-> 
+REST API for vocabulary app
 
 ## About
 
