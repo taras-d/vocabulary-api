@@ -3,7 +3,6 @@ const _ = require('lodash');
 const hooks = require('./me.hooks');
 
 module.exports = function (app) {
-  
   class Service {
 
     async find(params) {
@@ -11,7 +10,7 @@ module.exports = function (app) {
     }
 
     async remove(id, params) {
-      await app.get('mongooseClient').models.users.deleteOne({ _id: params.user._id });
+      await app.get('mongooseClient').models.users.deleteOne({ _id: params.user._id }).exec();
       return this.find(params);
     }
 
