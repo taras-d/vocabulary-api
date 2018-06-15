@@ -9,11 +9,6 @@ module.exports = function (app) {
       return _.omit(params.user, ['password']);
     }
 
-    async remove(id, params) {
-      await app.get('mongooseClient').models.users.deleteOne({ _id: params.user._id }).exec();
-      return this.find(params);
-    }
-
   }
 
   // Initialize our service with any options it requires
