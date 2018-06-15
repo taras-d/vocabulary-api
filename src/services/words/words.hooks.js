@@ -51,10 +51,26 @@ const checkWordBeforePatch = async context => {
   }
 };
 
+const processSearchParams = context => {
+  const query = context.params.query;
+  const search = query.$search;
+
+  delete query.$search;
+
+  if (search) {
+    query.$or = [
+      { text: new RegExp(search, 'i') },
+      { translation: new RegExp(search, 'i') }
+    ];
+  }
+};
+
 module.exports = {
   before: {
     all: [ authenticate('jwt') ],
-    find: [],
+    find: [
+      processSearchParams
+    ],
     get: [],
     create: [
       skipDuplicates
