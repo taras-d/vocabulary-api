@@ -1,10 +1,8 @@
 /* eslint-disable no-console */
 const logger = require('winston');
 const app = require('./app');
-
-const port = process.env.OPENSHIFT_NODEJS_PORT || app.get('port');
-const ip = process.env.OPENSHIFT_NODEJS_IP || '0.0.0.0';
-const server = app.listen(port, ip);
+const port = process.env.PORT || app.get('port');
+const server = app.listen(port);
 
 process.on('unhandledRejection', (reason, p) =>
   logger.error('Unhandled Rejection at: Promise ', p, reason)
