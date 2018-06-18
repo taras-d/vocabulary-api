@@ -1,6 +1,7 @@
-{
+
+module.exports = {
   "host": "localhost",
-  "port": 3030,
+  "port": process.env.PORT || 3030,
   "public": "../public/",
   "paginate": {
     "default": 10,
@@ -30,5 +31,5 @@
       "passwordField": "password"
     }
   },
-  "mongodb": "mongodb://root:abc123@ds139197.mlab.com:39197/vocabulary_dev"
+  "mongodb": process.env.MONGODB_URL
 }
