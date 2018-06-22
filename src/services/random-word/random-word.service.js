@@ -4,12 +4,17 @@ const hooks = require('./random-word.hooks');
 module.exports = function (app) {
   class Service {
 
-    async find() {
+    async find(params) {
       const models = app.get('mongooseClient').models;
 
-      const result = await models.words.aggregate([{
-        $sample: { size: 1 }
-      }]).exec();
+      const result = await models.words.aggregate([
+        {
+          $match: { userId: params.user._id }
+        },
+        {
+          $sample: { size: 1 }
+        }
+      ]).exec();
 
       return result[0] || null;
     }
