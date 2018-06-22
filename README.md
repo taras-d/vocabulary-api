@@ -1,9 +1,14 @@
 # vocabulary-api
 
-REST API for vocabulary app
+REST API for [Vocabulary App](https://github.com/taras-d/vocabulary-ui)
 
-## Installation
-1. Install node modules - `npm install`
-2. Specify mongodb url in the `MONGODB_URL` environment variable
-2. Start app - `npm start`
+## Install
 
+### 1. Install dependencies
+Run `npm install`
+
+### 2. Environment
+Create `.env` file and copy content from `.env.example`. Specify Mongodb connection in the *MONGODB_URL* variable.
+
+### 3. Start server
+Run `npm install`
