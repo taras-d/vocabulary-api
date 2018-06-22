@@ -1,14 +1,34 @@
 const authentication = require('@feathersjs/authentication');
 const jwt = require('@feathersjs/authentication-jwt');
 const local = require('@feathersjs/authentication-local');
+const errors = require('@feathersjs/errors');
 const _ = require('lodash');
+
+class CustomVerifier extends jwt.Verifier {
+
+  verify(req, payload, done) {
+    const userId = payload.userId;
+    if (!userId) {
+      done(new errors.NotAuthenticated('No user'));
+    }
+
+    this.service.get(userId).then(user => {
+      done(null, user, { userId });
+    }).catch(() => {
+      done(new errors.NotAuthenticated('No user'));
+    });
+  }
+
+}
 
 module.exports = function (app) {
   const config = app.get('authentication');
 
   // Set up authentication with the secret
   app.configure(authentication(config));
-  app.configure(jwt());
+  app.configure(
+    jwt({ Verifier: CustomVerifier })
+  );
   app.configure(local());
 
   // The `authentication` service is used to create a JWT.
