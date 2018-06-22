@@ -6,9 +6,12 @@ module.exports = function (app) {
 
     async find() {
       const models = app.get('mongooseClient').models;
-      return models.words.aggregate([{
+
+      const result = await models.words.aggregate([{
         $sample: { size: 1 }
       }]).exec();
+
+      return result[0] || null;
     }
 
   }
