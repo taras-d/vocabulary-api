@@ -2,11 +2,11 @@ const { authenticate } = require('@feathersjs/authentication').hooks;
 const { disableMultiItemChange, disallow } = require('feathers-hooks-common');
 const errors = require('@feathersjs/errors');
 const _ = require('lodash');
+const escapeRegExp = require('escape-string-regexp');
 
 const findWord = (text, model) => {
-  return model.findOne({
-    text: new RegExp(`^${text}$`, 'i')
-  }).exec();
+  const re = new RegExp(`^${escapeRegExp(text)}$`, 'i')
+  return model.findOne({ text: re }).exec();
 };
 
 const skipDuplicates = async context => {
@@ -58,9 +58,10 @@ const processSearchParams = context => {
   delete query.$search;
 
   if (search) {
+    const re = new RegExp(escapeRegExp(search), 'i');
     query.$or = [
-      { text: new RegExp(search, 'i') },
-      { translation: new RegExp(search, 'i') }
+      { text: re },
+      { translation: re }
     ];
   }
 };
