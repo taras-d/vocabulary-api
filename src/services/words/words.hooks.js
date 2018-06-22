@@ -1,15 +1,17 @@
 const { authenticate } = require('@feathersjs/authentication').hooks;
+const { restrictToOwner } = require('feathers-authentication-hooks');
 const { disableMultiItemChange, disallow } = require('feathers-hooks-common');
 const errors = require('@feathersjs/errors');
 const _ = require('lodash');
 const escapeRegExp = require('escape-string-regexp');
 
-const findWord = (text, model) => {
+const findWord = (text, userId, model) => {
   const re = new RegExp(`^${escapeRegExp(text)}$`, 'i')
-  return model.findOne({ text: re }).exec();
+  return model.findOne({ text: re, userId }).exec();
 };
 
 const skipDuplicates = async context => {
+  const user = context.params.user;
   const models = context.app.get('mongooseClient').models;
   const words = Array.isArray(context.data)? context.data: [context.data];
   const unique = [];
@@ -18,8 +20,9 @@ const skipDuplicates = async context => {
     const word = words[i];
     if (
       !unique.find(w => _.toLower(w.text) === _.toLower(word.text)) &&
-      !await findWord(word.text, models.words)
+      !await findWord(word.text, user._id, models.words)
     ) {
+      word.userId = user._id;
       unique.push(word);
     }
   }
@@ -42,11 +45,12 @@ const checkWordBeforePatch = async context => {
   const data = context.data;
 
   if ('text' in data) {
+    const user = context.params.user;
     const models = context.app.get('mongooseClient').models;
-    const word = await findWord(data.text, models.words);
+    const word = await findWord(data.text, user._id, models.words);
 
     if (word && word.id !== context.id) {
-      throw new errors.BadRequest(`Word with text "${data.text}" already exist`);
+      throw new errors.BadRequest(`Another word with text "${data.text}" already exist`);
     }
   }
 };
@@ -66,13 +70,20 @@ const processSearchParams = context => {
   }
 };
 
+const ownerOnly = restrictToOwner({ idField: '_id', ownerField: 'userId' });
+
 module.exports = {
   before: {
-    all: [ authenticate('jwt') ],
+    all: [
+      authenticate('jwt'),
+    ],
     find: [
+      ownerOnly,
       processSearchParams
     ],
-    get: [],
+    get: [
+      ownerOnly
+    ],
     create: [
       skipDuplicates
     ],
@@ -81,10 +92,12 @@ module.exports = {
     ],
     patch: [
       disableMultiItemChange(),
+      ownerOnly,
       checkWordBeforePatch
     ],
     remove: [
-      disableMultiItemChange()
+      disableMultiItemChange(),
+      ownerOnly
     ]
   },
 

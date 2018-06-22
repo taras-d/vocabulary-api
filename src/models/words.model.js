@@ -6,6 +6,10 @@ module.exports = function (app) {
   const mongooseClient = app.get('mongooseClient');
   const { Schema } = mongooseClient;
   const words = new Schema({
+    userId: {
+      type: Schema.Types.ObjectId,
+      required: true
+    },
     text: {
       type: String, 
       required: true
