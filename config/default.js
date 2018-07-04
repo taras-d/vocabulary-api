@@ -23,7 +23,7 @@ module.exports = {
       "subject": "anonymous",
       "issuer": "feathers",
       "algorithm": "HS256",
-      "expiresIn": "1d"
+      "expiresIn": "1y"
     },
     "local": {
       "entity": "user",
