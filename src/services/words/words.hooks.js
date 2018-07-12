@@ -3,10 +3,9 @@ const { restrictToOwner } = require('feathers-authentication-hooks');
 const { disableMultiItemChange, disallow } = require('feathers-hooks-common');
 const errors = require('@feathersjs/errors');
 const _ = require('lodash');
-const escapeRegExp = require('escape-string-regexp');
 
 const findWord = (text, userId, model) => {
-  const re = new RegExp(`^${escapeRegExp(text)}$`, 'i')
+  const re = new RegExp(`^${_.escapeRegExp(text)}$`, 'i')
   return model.findOne({ text: re, userId }).exec();
 };
 
@@ -62,7 +61,7 @@ const processSearchParams = context => {
   delete query.$search;
 
   if (search) {
-    const re = new RegExp(escapeRegExp(search), 'i');
+    const re = new RegExp(_.escapeRegExp(search), 'i');
     query.$or = [
       { text: re },
       { translation: re }
