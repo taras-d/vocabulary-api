@@ -5,7 +5,7 @@ const errors = require('@feathersjs/errors');
 const _ = require('lodash');
 
 const findWord = (text, userId, model) => {
-  const re = new RegExp(`^${_.escapeRegExp(text)}$`, 'i')
+  const re = new RegExp(`^${_.escapeRegExp(text)}$`, 'i');
   return model.findOne({ text: re, userId }).exec();
 };
 

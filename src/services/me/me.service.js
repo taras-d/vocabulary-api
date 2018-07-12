@@ -1,5 +1,3 @@
-const _ = require('lodash');
-
 const createService = require('./me.class');
 const hooks = require('./me.hooks');
 
