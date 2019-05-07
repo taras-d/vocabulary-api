@@ -39,11 +39,7 @@ class Service {
       }
     ]);
 
-    if (result.length) {
-      return result.map(item => item._id);
-    } else {
-      return [params.user.createdAt.getFullYear()];
-    }
+    return result.map(item => item._id);
   }
 
   async _getTotalInMonth(params) {
@@ -70,14 +66,10 @@ class Service {
       return _.get(result, '[0].count', 0);
     };
 
-    const monthsRange = _.range(0, 12);
     const result = [];
 
-    for (let i = 0; i < monthsRange.length; ++i) {
-      const month = monthsRange[i];
-      result.push({
-        month, total: await getTotal(month + 1)
-      });
+    for (let i = 0; i < 12; ++i) {
+      result.push(await getTotal(i + 1));
     }
 
     return result;
