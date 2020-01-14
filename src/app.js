@@ -34,15 +34,6 @@ app.use(favicon(path.join(app.get('public'), 'favicon.ico')));
 // Host the public folder
 app.use('/', express.static(app.get('public')));
 
-// Send index.html if request made via browser address bar
-app.get('*', (req, res, next) => {
-  if (req.headers.accept && req.headers.accept.includes('text/html')) {
-    res.sendFile(path.resolve(app.get('public'), 'index.html'));
-  } else {
-    next();
-  }
-});
-
 // Set up Plugins and providers
 app.configure(express.rest());
 
